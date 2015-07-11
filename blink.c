@@ -1,6 +1,11 @@
 #include <stm32f0xx_gpio.h>
 #include <stm32f0xx_rcc.h>
 
+/*
+    This example code is basically taken from
+    http://hsel.co.uk/2014/05/31/stm32f0-tutorial-1-gpio/
+*/
+
 #define GreenLED_Pin GPIO_Pin_9
 #define BlueLED_Pin GPIO_Pin_8
 #define LED_GPIO GPIOC

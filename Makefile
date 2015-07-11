@@ -15,7 +15,15 @@ ST_PERIPH_SOURCE_DIR="$(ST_STDPERIPH_LIB)/Libraries/STM32F0xx_StdPeriph_Driver/s
 # device we are building against, must be one listed in stm32f0xx.h
 BUILDING_FOR_DEVICE=STM32F051
 
-all:
-	# build the program
-	$(CC) blink.c -I$(ST_CORE_INCLUDE_DIR) -I$(ST_DEVICE_INCLUDE_DIR) -I$(ST_PERIPH_INCLUDE_DIR) -D$(BUILDING_FOR_DEVICE) -o blink.o
+CFLAGS=-c -Wall -D$(BUILDING_FOR_DEVICE)
+
+all: blink.o peripherals.o devices.o
 	# link the program
+	$(CC) blink.o peripherals.o devices.o -DBUILDING_FOR_DEVICE
+
+clean:
+	rm -f *.o *.elf
+
+blink.o: blink.c
+	# build the program
+	$(CC) $(CFLAGS) blink.c -I$(ST_CORE_INCLUDE_DIR) -I$(ST_DEVICE_INCLUDE_DIR) -I$(ST_PERIPH_INCLUDE_DIR) -o blink.o
