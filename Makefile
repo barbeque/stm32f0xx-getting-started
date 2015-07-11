@@ -18,8 +18,7 @@ ST_PERIPH_SOURCE_DIR=$(ST_STDPERIPH_LIB)/Libraries/STM32F0xx_StdPeriph_Driver/sr
 # device we are building against, must be one listed in stm32f0xx.h
 BUILDING_FOR_DEVICE=STM32F051
 
-# USE_STDPERIPH_DRIVER seems to shut up the assert_param warning
-CFLAGS=-c -Os -Wall -D$(BUILDING_FOR_DEVICE) -I$(ST_CORE_INCLUDE_DIR) -I$(ST_DEVICE_INCLUDE_DIR) -I$(ST_PERIPH_INCLUDE_DIR) -I$(ST_CONF_INCLUDE_DIR) -DUSE_STDPERIPH_DRIVER
+CFLAGS=-c -g -Os -Wall -D$(BUILDING_FOR_DEVICE) -I$(ST_CORE_INCLUDE_DIR) -I$(ST_DEVICE_INCLUDE_DIR) -I$(ST_PERIPH_INCLUDE_DIR) -I$(ST_CONF_INCLUDE_DIR)
 CFLAGS += -mlittle-endian -mcpu=cortex-m0 -march=armv6-m -mthumb
 CFLAGS += -ffunction-sections -fdata-sections
 
@@ -28,27 +27,21 @@ $(CC) $(CFLAGS) $< -o $@
 endef
 
 PERIPHERALS=$(wildcard $(ST_PERIPH_SOURCE_DIR)/*.c)
-PERIPHERALS_OBJECTS=$(notdir $(PERIPHERALS:.c=.o)) # $notdir removes the directory path, which is sweet.
-
+PERIPHERALS_OBJECTS=$(notdir $(PERIPHERALS:.c=.o))
 DEVICES=$(wildcard $(ST_DEVICE_SOURCE_DIR)/*.c)
-DEVICES_OBJECTS=$(notdir $(DEVICES:.c=.o)) # $notdir removes the directory path, which is sweet.
-
+DEVICES_OBJECTS=$(notdir $(DEVICES:.c=.o)) # $notdir removes the directory path, which is sweet
 
 blink.elf: blink.o $(PERIPHERALS_OBJECTS) $(DEVICES_OBJECTS)
 	# link the program
-	#$(CC) -o blink.elf *.o -Wl,-s -Wl,-lc -nostartfiles -Wl,-L/Users/mike/Code/cross-compilers/gcc-arm-none-eabi-4_9-2015q1/lib
-	$(CC) -o blink.elf -lstm32f0 -Tstm32f0.ld -Wl,-lc -Wl,-lg -Wl,-lm *.o
+	$(CC) -o blink.elf -Tstm32f0.ld -Wl,-lc -Wl,-lg -Wl,-lm *.o
 
 clean:
 	rm -f *.o *.elf
 
-# TODO: Build device C files
-# TODO: Build peripheral C files
-
-$(PERIPHERALS_OBJECTS): $(PERIPHERALS)
+$(PERIPHERALS_OBJECTS): %.o: $(ST_PERIPH_SOURCE_DIR)/%.c
 	$(cc-command)
 
-$(DEVICES_OBJECTS): $(DEVICES)
+$(DEVICES_OBJECTS): %.o: $(ST_DEVICE_SOURCE_DIR)/%.c
 	$(cc-command)
 
 %.o: %.c
