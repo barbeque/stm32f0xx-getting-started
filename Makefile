@@ -17,13 +17,16 @@ BUILDING_FOR_DEVICE=STM32F051
 
 CFLAGS=-c -Wall -D$(BUILDING_FOR_DEVICE)
 
-all: blink.o peripherals.o devices.o
+all: blink.o peripherals.o device.o
 	# link the program
-	$(CC) blink.o peripherals.o devices.o -DBUILDING_FOR_DEVICE
+	$(CC) blink.o peripherals.o device.o -DBUILDING_FOR_DEVICE
 
 clean:
 	rm -f *.o *.elf
 
-blink.o: blink.c
+# TODO: Build device C files into device.o
+# TODO: Build peripheral C files into peripherals.o
+
+%.o: %.c
 	# build the program
-	$(CC) $(CFLAGS) blink.c -I$(ST_CORE_INCLUDE_DIR) -I$(ST_DEVICE_INCLUDE_DIR) -I$(ST_PERIPH_INCLUDE_DIR) -o blink.o
+	$(CC) $(CFLAGS) $< -I$(ST_CORE_INCLUDE_DIR) -I$(ST_DEVICE_INCLUDE_DIR) -I$(ST_PERIPH_INCLUDE_DIR) -o $@
