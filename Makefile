@@ -32,9 +32,11 @@ PERIPHERALS_OBJECTS=$(notdir $(PERIPHERALS:.c=.o))
 DEVICES=$(wildcard $(ST_DEVICE_SOURCE_DIR)/*.c)
 DEVICES_OBJECTS=$(notdir $(DEVICES:.c=.o)) # $notdir removes the directory path, which is sweet
 
+STARTUP_FILE=$(ST_STDPERIPH_LIB)/Libraries/CMSIS/Device/ST/STM32F0xx/Source/Templates/TrueSTUDIO/startup_stm32f0xx.s
+
 blink.elf: blink.o $(PERIPHERALS_OBJECTS) $(DEVICES_OBJECTS)
 	# link the program
-	$(CC) -o blink.elf -Tstm32f0.ld -Wl,-lc -Wl,-lg -Wl,-lm *.o
+	$(CC) -o blink.elf -Tstm32f0.ld -Wl,-lc -Wl,-lg -Wl,-lm *.o $(STARTUP_FILE)
 
 clean:
 	rm -f *.o *.elf
