@@ -1,9 +1,12 @@
 CC=arm-none-eabi-gcc
+LD=arm-none-eabi-ld
 # where you unpacked the ST distro from http://www.st.com/web/en/catalog/tools/PF257884 to
 ST_STDPERIPH_LIB=$(HOME)/Code/cross-compilers/STM32F0xx_StdPeriph_Lib_V1.5.0
 
 # location of core_cm0.h
 ST_CORE_INCLUDE_DIR=$(ST_STDPERIPH_LIB)/Libraries/CMSIS/Include
+# location of stm32f0xx_conf.h
+ST_CONF_INCLUDE_DIR=$(ST_STDPERIPH_LIB)/Projects/STM32F0xx_StdPeriph_Templates
 # location of stm32f0xx.h from the ST distro
 ST_DEVICE_INCLUDE_DIR=$(ST_STDPERIPH_LIB)/Libraries/CMSIS/Device/ST/STM32F0xx/Include
 # location of system_stm32f0xx.c
@@ -16,7 +19,7 @@ ST_PERIPH_SOURCE_DIR=$(ST_STDPERIPH_LIB)/Libraries/STM32F0xx_StdPeriph_Driver/sr
 BUILDING_FOR_DEVICE=STM32F051
 
 # USE_STDPERIPH_DRIVER seems to shut up the assert_param warning
-CFLAGS=-c -Wall -D$(BUILDING_FOR_DEVICE) -I$(ST_CORE_INCLUDE_DIR) -I$(ST_DEVICE_INCLUDE_DIR) -I$(ST_PERIPH_INCLUDE_DIR) -DUSE_STDPERIPH_DRIVER
+CFLAGS=-c -Os -Wall -D$(BUILDING_FOR_DEVICE) -I$(ST_CORE_INCLUDE_DIR) -I$(ST_DEVICE_INCLUDE_DIR) -I$(ST_PERIPH_INCLUDE_DIR) -I$(ST_CONF_INCLUDE_DIR) -DUSE_STDPERIPH_DRIVER
 
 define cc-command
 $(CC) $(CFLAGS) $< -o $@
@@ -31,7 +34,7 @@ DEVICES_OBJECTS=$(notdir $(DEVICES:.c=.o)) # $notdir removes the directory path,
 
 all: blink.o $(PERIPHERALS_OBJECTS) $(DEVICES_OBJECTS)
 	# link the program
-	$(CC) blink.o $(PERIPHERALS_OBJECTS) $(DEVICES_OBJECTS)
+	$(CC) -o blink.elf *.o -Wl,-lc -nostartfiles
 
 clean:
 	rm -f *.o *.elf
