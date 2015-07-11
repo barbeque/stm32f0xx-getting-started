@@ -34,7 +34,11 @@ DEVICES_OBJECTS=$(notdir $(DEVICES:.c=.o)) # $notdir removes the directory path,
 
 all: blink.o $(PERIPHERALS_OBJECTS) $(DEVICES_OBJECTS)
 	# link the program
-	$(CC) -o blink.elf *.o -Wl,-lc -nostartfiles
+	# TODO: 'strip' is the only way LD passes...
+	# TODO: how do I use this linker script?
+	# TODO: should the linker script even be used to build? is it copyrighted?
+	$(CC) -o blink.elf *.o -Wl,-s -Wl,-lc -nostartfiles -Wl,-L/Users/mike/Code/cross-compilers/gcc-arm-none-eabi-4_9-2015q1/lib
+	#$(LD) -o blink.elf *.o -TSTM32F051R8_FLASH.ld -lc
 
 clean:
 	rm -f *.o *.elf
