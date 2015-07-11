@@ -37,8 +37,11 @@ all: blink.o $(PERIPHERALS_OBJECTS) $(DEVICES_OBJECTS)
 	# TODO: 'strip' is the only way LD passes...
 	# TODO: how do I use this linker script?
 	# TODO: should the linker script even be used to build? is it copyrighted?
-	$(CC) -o blink.elf *.o -Wl,-s -Wl,-lc -nostartfiles -Wl,-L/Users/mike/Code/cross-compilers/gcc-arm-none-eabi-4_9-2015q1/lib
-	#$(LD) -o blink.elf *.o -TSTM32F051R8_FLASH.ld -lc
+	#$(CC) -o blink.elf *.o -Wl,-s -Wl,-lc -nostartfiles -Wl,-L/Users/mike/Code/cross-compilers/gcc-arm-none-eabi-4_9-2015q1/lib
+	$(LD) -o blink.elf *.o -T STM32F051R8_FLASH.ld -lc
+
+strip:
+	arm-none-eabi-strip *.o
 
 clean:
 	rm -f *.o *.elf
