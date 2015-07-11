@@ -17,8 +17,12 @@ BUILDING_FOR_DEVICE=STM32F051
 
 CFLAGS=-c -Wall -D$(BUILDING_FOR_DEVICE) -I$(ST_CORE_INCLUDE_DIR) -I$(ST_DEVICE_INCLUDE_DIR) -I$(ST_PERIPH_INCLUDE_DIR)
 
+define cc-command
+$(CC) $(CFLAGS) $< -o $@
+endef
+
 PERIPHERALS=$(wildcard $(ST_PERIPH_SOURCE_DIR)/*.c)
-PERIPHERALS_OBJECTS=$(PERIPHERALS:.c=.o)
+PERIPHERALS_OBJECTS=$(PERIPHERALS:.c=.o) # TODO: This should be an output directory or something
 
 all: blink.o $(PERIPHERALS_OBJECTS)  #device.o
 	# link the program
@@ -31,8 +35,7 @@ clean:
 # TODO: Build peripheral C files
 
 $(PERIPHERALS_OBJECTS): $(PERIPHERALS)
-	$(CC) $(CFLAGS) $< -o $@
+	$(cc-command)
 
 %.o: %.c
-	# build the program
-	$(CC) $(CFLAGS) $< -o $@
+	$(cc-command)
