@@ -21,6 +21,7 @@ BUILDING_FOR_DEVICE=STM32F051
 CFLAGS=-c -g -Os -Wall -D$(BUILDING_FOR_DEVICE) -I$(ST_CORE_INCLUDE_DIR) -I$(ST_DEVICE_INCLUDE_DIR) -I$(ST_PERIPH_INCLUDE_DIR) -I$(ST_CONF_INCLUDE_DIR)
 CFLAGS += -mlittle-endian -mcpu=cortex-m0 -march=armv6-m -mthumb
 CFLAGS += -ffunction-sections -fdata-sections
+CFLAGS += -DUSE_STDPERIPH_DRIVER
 
 define cc-command
 $(CC) $(CFLAGS) $< -o $@
