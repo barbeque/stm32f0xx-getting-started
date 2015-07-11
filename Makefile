@@ -15,7 +15,8 @@ ST_PERIPH_SOURCE_DIR=$(ST_STDPERIPH_LIB)/Libraries/STM32F0xx_StdPeriph_Driver/sr
 # device we are building against, must be one listed in stm32f0xx.h
 BUILDING_FOR_DEVICE=STM32F051
 
-CFLAGS=-c -Wall -D$(BUILDING_FOR_DEVICE) -I$(ST_CORE_INCLUDE_DIR) -I$(ST_DEVICE_INCLUDE_DIR) -I$(ST_PERIPH_INCLUDE_DIR)
+# USE_STDPERIPH_DRIVER seems to shut up the assert_param warning
+CFLAGS=-c -Wall -D$(BUILDING_FOR_DEVICE) -I$(ST_CORE_INCLUDE_DIR) -I$(ST_DEVICE_INCLUDE_DIR) -I$(ST_PERIPH_INCLUDE_DIR) -DUSE_STDPERIPH_DRIVER
 
 define cc-command
 $(CC) $(CFLAGS) $< -o $@
