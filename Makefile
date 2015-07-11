@@ -22,11 +22,15 @@ $(CC) $(CFLAGS) $< -o $@
 endef
 
 PERIPHERALS=$(wildcard $(ST_PERIPH_SOURCE_DIR)/*.c)
-PERIPHERALS_OBJECTS=$(PERIPHERALS:.c=.o) # TODO: This should be an output directory or something
+PERIPHERALS_OBJECTS=$(notdir $(PERIPHERALS:.c=.o)) # $notdir removes the directory path, which is sweet.
 
-all: blink.o $(PERIPHERALS_OBJECTS)  #device.o
+DEVICES=$(wildcard $(ST_DEVICE_SOURCE_DIR)/*.c)
+DEVICES_OBJECTS=$(notdir $(DEVICES:.c=.o)) # $notdir removes the directory path, which is sweet.
+
+
+all: blink.o $(PERIPHERALS_OBJECTS) $(DEVICES_OBJECTS)
 	# link the program
-	$(CC) blink.o $(PERIPHERALS_OBJECTS) device.o
+	$(CC) blink.o $(PERIPHERALS_OBJECTS) $(DEVICES_OBJECTS)
 
 clean:
 	rm -f *.o *.elf
@@ -35,6 +39,9 @@ clean:
 # TODO: Build peripheral C files
 
 $(PERIPHERALS_OBJECTS): $(PERIPHERALS)
+	$(cc-command)
+
+$(DEVICES_OBJECTS): $(DEVICES)
 	$(cc-command)
 
 %.o: %.c
