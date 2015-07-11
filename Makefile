@@ -36,7 +36,7 @@ STARTUP_FILE=$(ST_STDPERIPH_LIB)/Libraries/CMSIS/Device/ST/STM32F0xx/Source/Temp
 
 blink.elf: blink.o $(PERIPHERALS_OBJECTS) $(DEVICES_OBJECTS)
 	# link the program
-	$(CC) -o blink.elf -Tstm32f0.ld -Wl,-lc -Wl,-lg -Wl,-lm *.o $(STARTUP_FILE)
+	$(CC) -o blink.elf -Tstm32f0.ld -Wl,-lc -Wl,-lg -Wl,-lm -Wl,--gc-sections *.o $(STARTUP_FILE)
 
 clean:
 	rm -f *.o *.elf
