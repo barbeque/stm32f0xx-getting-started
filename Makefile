@@ -20,6 +20,8 @@ BUILDING_FOR_DEVICE=STM32F051
 
 # USE_STDPERIPH_DRIVER seems to shut up the assert_param warning
 CFLAGS=-c -Os -Wall -D$(BUILDING_FOR_DEVICE) -I$(ST_CORE_INCLUDE_DIR) -I$(ST_DEVICE_INCLUDE_DIR) -I$(ST_PERIPH_INCLUDE_DIR) -I$(ST_CONF_INCLUDE_DIR) -DUSE_STDPERIPH_DRIVER
+CFLAGS += -mlittle-endian -mcpu=cortex-m0 -march=armv6-m -mthumb
+CFLAGS += -ffunction-sections -fdata-sections
 
 define cc-command
 $(CC) $(CFLAGS) $< -o $@
@@ -32,11 +34,10 @@ DEVICES=$(wildcard $(ST_DEVICE_SOURCE_DIR)/*.c)
 DEVICES_OBJECTS=$(notdir $(DEVICES:.c=.o)) # $notdir removes the directory path, which is sweet.
 
 
-all: blink.o $(PERIPHERALS_OBJECTS) $(DEVICES_OBJECTS)
+blink.elf: blink.o $(PERIPHERALS_OBJECTS) $(DEVICES_OBJECTS)
 	# link the program
-	# TODO: can the linker script be included in the github repo?
 	#$(CC) -o blink.elf *.o -Wl,-s -Wl,-lc -nostartfiles -Wl,-L/Users/mike/Code/cross-compilers/gcc-arm-none-eabi-4_9-2015q1/lib
-	$(CC) -o blink.elf -Wl,-TSTM32F051R8_FLASH.ld -Wl,-lc -Wl,-lg -Wl,-lm *.o
+	$(CC) -o blink.elf -lstm32f0 -Tstm32f0.ld -Wl,-lc -Wl,-lg -Wl,-lm *.o
 
 clean:
 	rm -f *.o *.elf
